@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>WeHeart-后台管理</title>
+	<link rel="shortcut icon" href="images/favicon.ico">
+	<link rel="stylesheet" href="css/base.css">
+	<link rel="stylesheet" href="css/back_office.css">
+	<script src="js/mouse.js"></script>
+	<script src="js/echarts.min.js"></script>
+	<script src="./node_modules/web3/dist/web3.min.js"></script>
+	<script src="./js/jQuery3.6.0.js"></script>
+</head>
+
+<body>
+
+	<!--导航栏模块-->
+	<header class="header">
+		<!--logo区域-->
+		<div class="logo">
+			<a href="home.html"></a>
+			<h1 class="logo_text" style="color: rgb(63, 54, 54);">WeHeart后台管理</h1>
+		</div>
+		<div class="name">欢迎: WeAdmin <span onclick="custom_close()" style="color: #c81623;cursor: pointer">| 退出</span>
+		</div>
+	</header>
+
+	<!--管理模块-->
+	<div class="bg">
+		<div class="tab">
+			<div class="tab_list">
+				<ul>
+					<li class="current">合约项目</li>
+					<li>捐赠明细</li>
+					<li>交易操作</li>
+					<li>综合管理</li>
+				</ul>
+			</div>
+			<div class="tab_con">
+				<!--            合约项目-->
+				<div class="item" style="display: block;">
+					<table class="customers" style="table-layout: fixed" id="proj_tab">
+						<thead>
+							<tr>
+								<th>项目名称</th>
+								<th>项目类别</th>
+								<th>项目编号</th>
+								<th>发布时间</th>
+								<th>项目简介</th>
+								<th>已筹/还需/人次</th>
+							</tr>
+						</thead>
+					</table>
+				</div>
+
+				<!--            捐赠明细-->
+				<div class="item">
+					<table class="customers" style="table-layout: fixed" id="all_donate">
+						<thead>
+							<tr>
+								<th>积分索引</th>
+								<th>捐赠项目</th>
+								<th>项目类别</th>
+								<th>捐赠时间</th>
+								<th>捐赠金额</th>
+								<th>爱心留言</th>
+							</tr>
+						</thead>
+					</table>
+				</div>
+
+				<!-- 交易操作 -->
+				<div class="item">
+					<!-- 使用资金 -->
+					<span style="position: absolute;top: 35px;right: 155px;font-size: 18px;font-weight: 700;">资金使用情况上链</span>
+					<div class="use1">
+						<ul>
+							<li> <input type="text" placeholder="输入项目编号" id="number"></li>
+							<li> <input type="text" placeholder="输入使用情况" id="use"></li>
+							<li>
+								<input type="file" multiple="multiple" style="color: gray;font-size: 16px;">
+							</li>
+						</ul>
+						<div class="use_btn1" id="use_btn1">确定</div>
+					</div>
+					<!-- 更改项目资金 -->
+					<span style="position: absolute;top: 35px;left: 530px;font-size: 18px;font-weight: 700;">更改还需筹集资金</span>
+					<div class="use2">
+						<ul>
+							<li><input type="text" placeholder="输入项目名称"></li>
+							<li><input type="text" placeholder="输入项目编号" id="modify_number"></li>
+							<li><input type="text" placeholder="更改项目资金" id="modify_money"></li>
+						</ul>
+						<div class="use_btn2" id="use_btn2">确定</div>
+					</div>
+					<!-- 发布项目 -->
+					<span style="position: absolute;top: 35px;left: 190px;font-size: 18px;font-weight: 700;">发布项目</span>
+					<div class="use3">
+						<ul>
+							<li><input type="text" placeholder="输入项目编号" id="proj_num"></li>
+							<li><input type="text" placeholder="输入筹集金额" id="proj_mon"></li>
+							<li><input type="text" placeholder="输入项目名称" id="proj_nam"></li>
+							<li><input type="text" placeholder="输入项目类型" id="proj_typ"></li>
+							<li><input type="text" placeholder="输入项目简介" id="proj_mess"></li>
+						</ul>
+						<div class="use_btn3" id="use_btn3">确定</div>
+					</div>
+				</div>
+
+				<!--            综合管理-->
+				<div class="item manage">
+					<div class="chart_fir"></div>
+					<div class="chart_sec"></div>
+					<div class="chart_thi"></div>
+					<div class="organ">
+						<img src="images/organization.png" alt="">
+						<ul>
+							<li>组织名称</li>
+							<li>WeAdmin</li>
+						</ul>
+					</div>
+					<div class="sum_money">
+						<img src="images/money.png" alt="">
+						<ul>
+							<li>总筹集资金</li>
+							<li id="sum_money"></li>
+						</ul>
+					</div>
+					<div class="effect_proj">
+						<img src="images/effect.png" alt="">
+						<ul>
+							<li>有效项目</li>
+							<li id="valid_proj"></li>
+						</ul>
+					</div>
+					<div class="sum_proj">
+						<img src="images/proj.png" alt="">
+						<ul>
+							<li>项目总数</li>
+							<li id="sum_proj"></li>
+						</ul>
+					</div>
+					<div class="chain_id">
+						<img src="images/chain.png" alt="">
+						<ul>
+							<li>链节点ID</li>
+							<li id="chain_id"></li>
+						</ul>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+
+	<!--版权说明区域-->
+	<div class="copyright">
+		<ul>
+			<li>版权所有：WeHeart &nbsp; [京ICP备01号] 盗版必究&nbsp; 京公网安备 01号</li>
+			<li>地址：湖北省武汉市 &nbsp;咨询电话：0027-0101001 &nbsp;邮政编码：430074</li>
+			<li>技术支持：爱心科技有限公司</li>
+		</ul>
+	</div>
+
+	<script>
+		// 获取元素
+		var tab_list = document.querySelector('.tab_list');
+		var lis = tab_list.querySelectorAll('li');
+		var items = document.querySelectorAll('.item');
+		// for循环绑定点击事件
+		for (var i = 0; i < lis.length; i++) {
+			// 开始给5个小li 设置索引号
+			lis[i].setAttribute('index', i);
+			lis[i].onclick = function () {
+				// 1. 上的模块选项卡，点击某一个，当前这一个底色会是红色，其余不变（排他思想） 修改类名的方式
+
+				// 干掉所有人 其余的li清除 class 这个类
+				for (var i = 0; i < lis.length; i++) {
+					lis[i].className = '';
+				}
+				// 留下我自己
+				this.className = 'current';
+				// 2. 下面的显示内容模块
+				var index = this.getAttribute('index');
+				console.log(index);
+				// 干掉所有人 让其余的item 这些div 隐藏
+				for (var i = 0; i < items.length; i++) {
+					items[i].style.display = 'none';
+				}
+				// 留下我自己 让对应的item 显示出来
+				items[index].style.display = 'block';
+			}
+		}
+	</script>
+	<script>
+		var chart_fir = echarts.init(document.querySelector('.chart_fir'));
+		var option_fir = {
+			title: {
+				text: '各类别项目资金总量',
+				x: 'center',
+			},
+			tooltip: {
+				trigger: 'axis',
+			},
+			legend: {
+				data: ['救灾扶贫', '助医扶残', '支教助学', '安老助孤', '志愿服务', '资金总和'],
+				y: '30'
+			},
+			grid: {
+				left: '3%',
+				right: '4%',
+				bottom: '3%',
+				containLabel: true
+			},
+			toolbox: {
+				feature: {
+					saveAsImage: {}
+				}
+			},
+			xAxis: {
+				type: 'category',
+				boundaryGap: false,
+				data: ['5月', '6月', '7月', '8月', '9月', '10月']
+			},
+			yAxis: {
+				type: 'value',
+				axisLabel: {
+					formatter: '￥{value}'
+				}
+			},
+			series: [
+				{
+					name: '救灾扶贫',
+					type: 'line',
+					smooth: true,
+					data: [0, 0, 0, 500, 900, 1000]
+				},
+				{
+					name: '助医扶残',
+					type: 'line',
+					smooth: true,
+					data: [0, 0, 0, 200, 500, 700]
+				},
+				{
+					name: '支教助学',
+					type: 'line',
+					smooth: true,
+					data: [0, 0, 0, 200, 300, 600]
+				},
+				{
+					name: '安老助孤',
+					type: 'line',
+					smooth: true,
+					data: [0, 0, 0, 300, 400, 800]
+				},
+				{
+					name: '志愿服务',
+					type: 'line',
+					smooth: true,
+					data: [0, 0, 0, 100, 300, 500]
+				},
+				{
+					name: '资金总和',
+					type: 'line',
+					smooth: true,
+					data: [0, 0, 0, 1300, 2400, 3600]
+				}
+			]
+		};
+
+		chart_fir.setOption(option_fir);
+
+		var chart_sec = echarts.init(document.querySelector('.chart_sec'));
+		var option_sec = {
+			title: {
+				text: '各类别项目资金比例',
+				left: 'center'
+			},
+			tooltip: {
+				trigger: 'item',
+				formatter: '{a} <br/>{b} : ￥{c} ({d}%)'
+			},
+			legend: {
+				left: 'center',
+				top: 'bottom',
+				data: [
+					'救灾扶贫',
+					'助医扶残',
+					'支教助学',
+					'安老助孤',
+					'志愿服务',
+				]
+			},
+			toolbox: {
+				show: true,
+				feature: {
+					mark: { show: true },
+					dataView: { show: true, readOnly: false },
+					saveAsImage: { show: true }
+				}
+			},
+			series: [
+				{
+					name: '项目类别',
+					type: 'pie',
+					radius: [20, 140],
+					center: ['50%', '50%'],
+					roseType: 'area',
+					itemStyle: {
+						borderRadius: 5
+					},
+					data: [
+						{ value: 1000, name: '救灾扶贫' },
+						{ value: 700, name: '助医扶残' },
+						{ value: 600, name: '支教助学' },
+						{ value: 800, name: '安老助孤' },
+						{ value: 500, name: '志愿服务' },
+
+					]
+				}
+			]
+		};
+
+		chart_sec.setOption(option_sec);
+
+		var chart_thi = echarts.init(document.querySelector('.chart_thi'));
+		var option_thi = {
+			title: {
+				text: '各项目已筹集资金情况',
+				left: 'center'
+			},
+			tooltip: {
+				trigger: 'item',
+				formatter: '{a} <br/>{b} : ￥{c} ({d}%)'
+			},
+			toolbox: {
+				show: true,
+				feature: {
+					mark: { show: true },
+					dataView: { show: true, readOnly: false },
+					saveAsImage: { show: true }
+				}
+			},
+			series: [
+				{
+					name: '项目名称',
+					type: 'pie',
+					radius: [20, 140],
+					center: ['50%', '50%'],
+					roseType: 'area',
+					itemStyle: {
+						borderRadius: 5
+					},
+					data: [
+						{ value: 800, name: '紧急救援9.16泸县地震' },
+						{ value: 200, name: '洪水中关爱美好家园守护者' },
+						{ value: 300, name: '一张纸献爱心行动' },
+						{ value: 400, name: '善济病困项目' },
+						{ value: 400, name: '干净娃娃养成计划' },
+						{ value: 200, name: '慈善文化进校园项目' },
+						{ value: 400, name: '慈爱孤儿工程' },
+						{ value: 400, name: '点亮希望，善行未来' },
+						{ value: 300, name: '慈善一元捐行动' },
+						{ value: 200, name: '圆梦中国行动' },
+
+					]
+				}
+			]
+		};
+
+		chart_thi.setOption(option_thi);
+
+	</script>
+	<script>
+		function copyText(a, b) {
+			var text = document.getElementById(a).innerHTML;
+			var input = document.getElementById(b);
+			input.value = text; // 修改文本框的内容
+			input.select(); // 选中文本
+			document.execCommand("copy"); // 执行浏览器复制命令
+		}
+	</script>
+	<!--退出页面-->
+	<script>
+		function custom_close() {
+			if (confirm("您确定要退出系统吗？")) {
+				window.opener = null;
+				// window.open('', '_self');
+				window.close();
+			} else { }
+		}
+	</script>
+
+	<script>
+		if (typeof web3 !== 'undefined') {
+			web3 = new Web3(web3.currentProvider);
+		} else {
+			web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:7545"));
+		}
+		let address = '0x30419c50Ed7f9070677C5Dc8F8Af0EB55060c98e'
+		let abi = [
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"name": "id",
+						"type": "uint256"
+					}
+				],
+				"name": "getprocess",
+				"outputs": [
+					{
+						"name": "",
+						"type": "string[]"
+					},
+					{
+						"name": "",
+						"type": "uint256[]"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "getprogram",
+				"outputs": [
+					{
+						"name": "",
+						"type": "uint256[]"
+					},
+					{
+						"name": "",
+						"type": "string[]"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"name": "id",
+						"type": "uint256"
+					}
+				],
+				"name": "getDAG",
+				"outputs": [
+					{
+						"name": "",
+						"type": "uint256[]"
+					},
+					{
+						"name": "",
+						"type": "uint256[]"
+					}
+				],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"name": "_value",
+						"type": "uint256"
+					}
+				],
+				"name": "changevalue",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"name": "id",
+						"type": "uint256"
+					}
+				],
+				"name": "getstringinfor",
+				"outputs": [
+					{
+						"name": "",
+						"type": "string"
+					},
+					{
+						"name": "",
+						"type": "string"
+					},
+					{
+						"name": "",
+						"type": "string"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"name": "_describe",
+						"type": "string"
+					}
+				],
+				"name": "implementProgram",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [
+					{
+						"name": "id",
+						"type": "uint256"
+					}
+				],
+				"name": "getinfor",
+				"outputs": [
+					{
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"name": "",
+						"type": "address"
+					},
+					{
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"name": "totalneed",
+						"type": "uint256"
+					},
+					{
+						"name": "title",
+						"type": "string"
+					},
+					{
+						"name": "programType",
+						"type": "string"
+					},
+					{
+						"name": "description",
+						"type": "string"
+					}
+				],
+				"name": "addprogram",
+				"outputs": [
+					{
+						"name": "success",
+						"type": "bool"
+					}
+				],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"name": "Programaddr",
+						"type": "address"
+					},
+					{
+						"name": "DAGaddr",
+						"type": "address"
+					}
+				],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			}
+		]
+
+		let info = new web3.eth.Contract(abi, address)
+		const from = '0xe660F68C83f3BfE7105bFed6DEC96616F4c1eCf4'
+
+		// 发布项目
+		$("#use_btn3").click(function () {
+			info.methods.addprogram(parseInt($("#proj_num").val()), parseInt($("#proj_mon").val()), $("#proj_nam").val(), $("#proj_typ").val(), $("#proj_mess").val()).send({ from: from, gas: 3000000 }).then(proj => {
+				console.log('发布项目：', proj)
+				info.methods.implementProgram(parseInt($("#proj_num").val()), '发布项目').send({ from: from, gas: 3000000 }).then(implement => {
+					// console.log('项目进度设置：',implement)
+					alert('项目发布成功！交易hash为：' + proj.transactionHash)
+				})
+			})
+		})
+
+
+		// 更改预筹集资金
+		$("#use_btn2").click(function () {
+			info.methods.changevalue(parseInt($("#modify_number").val()), parseInt($("#modify_money").val())).send({ from: from, gas: 3000000 }).then(change => {
+				console.log('更改还需筹集资金：', change)
+				alert('还需筹集资金更改成功！交易hash为：' + change.transactionHash)
+			})
+		})
+
+
+		// 获取链id
+		web3.eth.getChainId().then(chain => {
+			// console.log('当前链id：',chain)
+			$("#chain_id").html(chain)
+		})
+
+		// 设置资金使用流向
+		$("#use_btn1").click(function () {
+			info.methods.implementProgram(parseInt($("#number").val()), $("#use").val()).send({ from: from, gas: 3000000 }).then(use => {
+				console.log('资金使用：', use)
+				alert('本次资金使用成功！交易hash为：' + use.transactionHash)
+			})
+		})
+
+		// 获取项目编号、名称
+		info.methods.getprogram().call({ from: from }).then(data => {
+			// console.log('发布项目编号、名称：', data)
+			$("#sum_proj").html(data[0].length)
+			$("#valid_proj").html(data[0].length)
+
+			// 获取已筹集资金
+			let sum_money = 0
+			for (let i = 0; i < data[0].length; i++) {
+				let proj_id = data[0][i]
+				// console.log('项目编号：', proj_id)
+				info.methods.getinfor(proj_id).call({ from: from }).then(proj_info => {
+					// console.log('项目信息：', proj_info)
+					let proj_money = proj_info[4]
+					sum_money += parseFloat(proj_money)
+					// console.log('已筹资金：', sum_money)
+					$("#sum_money").html('￥' + sum_money)
+
+					// 获取项目名称、类别、简介
+					info.methods.getstringinfor(proj_id).call({ from: from }).then(strinfo => {
+						// console.log('项目名称、类别、简介：', strinfo)
+						let proj_name = strinfo[0]
+						let proj_type = strinfo[1]
+						let proj_abstract = strinfo[2]
+
+						// 获取项目发布时间
+						info.methods.getprocess(proj_id).call().then(timestamp => {
+							// console.log('项目时间线：', timestamp)
+
+							//时间戳转日期
+							let datetime = new Date(timestamp[1][0] * 1000)
+							Y = datetime.getFullYear() + '/'
+							M = (datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1) + '/'
+							D = (datetime.getDate() < 10) ? '0' + datetime.getDate() + ' ' : datetime.getDate() + ' '
+							h = (datetime.getHours() < 10) ? '0' + datetime.getHours() + ':' : datetime.getHours() + ':'
+							m = (datetime.getMinutes() < 10) ? '0' + datetime.getMinutes() + ':' : datetime.getMinutes() + ':'
+							s = (datetime.getSeconds() < 10) ? '0' + datetime.getSeconds() : datetime.getSeconds()
+							let proj_time = Y + M + D + h + m + s
+
+							//添加项目表格
+							var group = [{ a: proj_name, b: proj_type, c: proj_id, d: proj_time, e: proj_abstract, f: '￥' + proj_info[4] + '/￥' + proj_info[2] + '/' + proj_info[3] }]
+							var mydonate = $("#proj_tab");
+							for (var k = 0; k < group.length; k++) {
+								var item = group[k];
+								mydonate.prepend('<tr>' +
+									'<td >' + item.a + '</td>' +
+									'<td >' + item.b + '</td>' +
+									'<td >' + item.c + '</td>' +
+									'<td >' + item.d + '</td>' +
+									'<td class="id_don">' + item.e + '</td>' +
+									'<td >' + item.f + '</td>')
+							}
+						})
+					})
+				})
+			}
+		})
+
+		// 获取每一条捐赠交易信息
+		let _address = '0x838B2BC9f0BBb4A2Ce0A8A4f45b67810613c392d'
+		let _abi = [{
+			"constant": false,
+			"inputs": [],
+			"name": "getBalance",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "id",
+					"type": "uint256"
+				}
+			],
+			"name": "getprocess",
+			"outputs": [
+				{
+					"name": "",
+					"type": "string[]"
+				},
+				{
+					"name": "",
+					"type": "uint256[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "id",
+					"type": "uint256"
+				},
+				{
+					"name": "_value",
+					"type": "uint256"
+				},
+				{
+					"name": "_programType",
+					"type": "string"
+				},
+				{
+					"name": "_message",
+					"type": "string"
+				}
+			],
+			"name": "devote",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "getprogram",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256[]"
+				},
+				{
+					"name": "",
+					"type": "string[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "getdonationids",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes32[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_to",
+					"type": "address"
+				},
+				{
+					"name": "_value",
+					"type": "uint256"
+				}
+			],
+			"name": "dealPoints",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "_txid",
+					"type": "bytes32"
+				}
+			],
+			"name": "getdonation",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes32"
+				},
+				{
+					"name": "",
+					"type": "uint256"
+				},
+				{
+					"name": "",
+					"type": "string"
+				},
+				{
+					"name": "",
+					"type": "uint256"
+				},
+				{
+					"name": "",
+					"type": "string"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "id",
+					"type": "uint256"
+				},
+				{
+					"name": "_value",
+					"type": "uint256"
+				}
+			],
+			"name": "changevalue",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "id",
+					"type": "bytes32"
+				}
+			],
+			"name": "getTxInfor",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes32"
+				},
+				{
+					"name": "",
+					"type": "address"
+				},
+				{
+					"name": "",
+					"type": "address"
+				},
+				{
+					"name": "",
+					"type": "uint256"
+				},
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "id",
+					"type": "uint256"
+				}
+			],
+			"name": "getstringinfor",
+			"outputs": [
+				{
+					"name": "",
+					"type": "string"
+				},
+				{
+					"name": "",
+					"type": "string"
+				},
+				{
+					"name": "",
+					"type": "string"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "id",
+					"type": "uint256"
+				},
+				{
+					"name": "_describe",
+					"type": "string"
+				}
+			],
+			"name": "implementProgram",
+			"outputs": [],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": true,
+			"inputs": [
+				{
+					"name": "id",
+					"type": "uint256"
+				}
+			],
+			"name": "getinfor",
+			"outputs": [
+				{
+					"name": "",
+					"type": "uint256"
+				},
+				{
+					"name": "",
+					"type": "address"
+				},
+				{
+					"name": "",
+					"type": "uint256"
+				},
+				{
+					"name": "",
+					"type": "uint256"
+				},
+				{
+					"name": "",
+					"type": "uint256"
+				}
+			],
+			"payable": false,
+			"stateMutability": "view",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [],
+			"name": "getTxs",
+			"outputs": [
+				{
+					"name": "",
+					"type": "bytes32[]"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"constant": false,
+			"inputs": [
+				{
+					"name": "id",
+					"type": "uint256"
+				},
+				{
+					"name": "totalneed",
+					"type": "uint256"
+				},
+				{
+					"name": "title",
+					"type": "string"
+				},
+				{
+					"name": "programType",
+					"type": "string"
+				},
+				{
+					"name": "description",
+					"type": "string"
+				}
+			],
+			"name": "addprogram",
+			"outputs": [
+				{
+					"name": "success",
+					"type": "bool"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "function"
+		},
+		{
+			"inputs": [
+				{
+					"name": "Programaddr",
+					"type": "address"
+				},
+				{
+					"name": "Integraladdr",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "constructor"
+		}
+		]
+		let _info = new web3.eth.Contract(_abi, _address)
+		const _from = '0xB949302e21D01D5EE67685F44C6E895fC76035dc'
+
+		//获取捐赠金额、时间   
+		_info.methods.getTxs().call({ from: _from }).then(data => {
+			// console.log('bytes32id:', data)
+
+			for (let i = 0; i < data.length; i++) {
+				_info.methods.getTxInfor(data[i]).call({ from: _from }).then(ins => {
+					// console.log('ins:', ins)
+					let money = ins[4] + "元"
+					let trans_hash = ins[0]
+					//时间戳转日期
+					let datetime = new Date(ins[3] * 1000)
+					Y = datetime.getFullYear() + '/'
+					M = (datetime.getMonth() + 1 < 10 ? '0' + (datetime.getMonth() + 1) : datetime.getMonth() + 1) + '/'
+					D = (datetime.getDate() < 10) ? '0' + datetime.getDate() + ' ' : datetime.getDate() + ' '
+					h = (datetime.getHours() < 10) ? '0' + datetime.getHours() + ':' : datetime.getHours() + ':'
+					m = (datetime.getMinutes() < 10) ? '0' + datetime.getMinutes() + ':' : datetime.getMinutes() + ':'
+					s = (datetime.getSeconds() < 10) ? '0' + datetime.getSeconds() : datetime.getSeconds()
+					let time = Y + M + D + h + m + s
+
+					_info.methods.getdonationids().call({ from: _from }).then(ids => {
+						// console.log('捐赠id:', ids)
+						//获取项目类型、留言
+						_info.methods.getdonation(ids[i]).call({ from: _from }).then(doninfo => {
+							// console.log('获取项目类型、留言:', doninfo)
+
+							//获取项目名称
+							_info.methods.getstringinfor(doninfo[1]).call({ from: _from }).then(proj_name => {
+								// console.log('捐赠项目名称:', proj_name)
+
+								//添加捐赠表格
+								var group = [{ a: trans_hash, b: proj_name[0], c: doninfo[2], d: time, e: money, f: doninfo[4] }]
+								var mydonate = $("#all_donate");
+								for (var k = 0; k < group.length; k++) {
+									var item = group[k];
+									mydonate.prepend('<tr>' +
+										'<td class="omit">' + item.a + '</td>' +
+										'<td >' + item.b + '</td>' +
+										'<td >' + item.c + '</td>' +
+										'<td >' + item.d + '</td>' +
+										'<td class="id_don">' + item.e + '</td>' +
+										'<td >' + item.f + '</td>')
+								}
+							})
+						})
+					})
+				})
+			}
+		})
+
+	</script>
+
+</body>
+
+</html>
